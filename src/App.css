@@ -154,11 +154,8 @@
 }
 
 .add-button {
-  background: rgba(255,255,255,0.2);
+  background: #141414;
   border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
   font-size: 24px;
   color: white;
   cursor: pointer;
@@ -166,6 +163,24 @@
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s;
+}
+.delete-button {
+  background: #141414;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.bookmarks-actions {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  justify-content: center;
 }
 
 .bookmarks-grid {
