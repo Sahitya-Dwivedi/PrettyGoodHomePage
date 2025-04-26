@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import { MdDelete } from "react-icons/md";
+import { IoAddSharp } from "react-icons/io5";
 
 function App() {
   // States
@@ -77,7 +79,8 @@ function App() {
 
   // Handle search
   const handleSearch = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission
+    // Redirect to Google search
     if (searchQuery) {
       window.location.href = `https://www.google.com/search?q=${encodeURIComponent(
         searchQuery
@@ -96,6 +99,18 @@ function App() {
     const url = prompt("Enter website URL:");
     if (name && url) {
       setShortcuts([...shortcuts, { name, url, icon: "🔖" }]);
+    }
+  };
+
+  // Delete a shortcut
+  const deleteShortcut = (index, e) => {
+    e.preventDefault(); // Prevent navigating to the link
+    e.stopPropagation(); // Prevent event bubbling
+
+    if (window.confirm(`Delete shortcut "${shortcuts[index].name}"?`)) {
+      const updatedShortcuts = [...shortcuts];
+      updatedShortcuts.splice(index, 1);
+      setShortcuts(updatedShortcuts);
     }
   };
 
@@ -161,20 +176,38 @@ function App() {
         <div className="bookmarks-container">
           <div className="bookmarks-header">
             <h2 className="bookmarks-title">Shortcuts</h2>
-            <button
-              className="add-button"
-              onClick={addShortcut}
-              title="Add shortcut"
-            >
-              +
-            </button>
+            <div className="bookmarks-actions">
+              <button
+                className="add-button"
+                onClick={addShortcut}
+                title="Add shortcut"
+              >
+                <IoAddSharp width={"35px"} />
+              </button>
+              <button
+                className="delete-button"
+                onClick={addShortcut}
+                title="Add shortcut"
+              >
+                <MdDelete width={"35px"} />
+              </button>
+            </div>
           </div>
           <div className="bookmarks-grid">
             {shortcuts.map((shortcut, index) => (
-              <a key={index} href={shortcut.url} className="bookmark">
-                <span className="icon">{shortcut.icon}</span>
-                <span>{shortcut.name}</span>
-              </a>
+              <div key={index} className="bookmark-wrapper">
+                <a href={shortcut.url} className="bookmark">
+                  <span className="icon">{shortcut.icon}</span>
+                  <span>{shortcut.name}</span>
+                </a>
+                <button
+                  className="delete-button"
+                  onClick={(e) => deleteShortcut(index, e)}
+                  title="Delete shortcut"
+                >
+                  ×
+                </button>
+              </div>
             ))}
           </div>
         </div>
