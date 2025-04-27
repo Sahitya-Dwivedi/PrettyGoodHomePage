@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { MdDelete } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 function App() {
   // States
@@ -10,6 +10,7 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [quote, setQuote] = useState({ text: "", author: "" });
   const [backgroundIndex, setBackgroundIndex] = useState(0);
+  const [menuOpenIndex, setMenuOpenIndex] = useState(null);
 
   // Background images
   const backgrounds = [
@@ -47,6 +48,18 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setMenuOpenIndex(null);
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   // Simulate weather API call
   useEffect(() => {
     setTimeout(() => {
@@ -79,8 +92,7 @@ function App() {
 
   // Handle search
   const handleSearch = (e) => {
-    e.preventDefault(); // Prevent form submission
-    // Redirect to Google search
+    e.preventDefault();
     if (searchQuery) {
       window.location.href = `https://www.google.com/search?q=${encodeURIComponent(
         searchQuery
@@ -103,15 +115,20 @@ function App() {
   };
 
   // Delete a shortcut
-  const deleteShortcut = (index, e) => {
-    e.preventDefault(); // Prevent navigating to the link
-    e.stopPropagation(); // Prevent event bubbling
-
+  const deleteShortcut = (index) => {
     if (window.confirm(`Delete shortcut "${shortcuts[index].name}"?`)) {
       const updatedShortcuts = [...shortcuts];
       updatedShortcuts.splice(index, 1);
       setShortcuts(updatedShortcuts);
     }
+    setMenuOpenIndex(null);
+  };
+
+  // Toggle menu for a shortcut
+  const toggleMenu = (index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpenIndex(menuOpenIndex === index ? null : index);
   };
 
   return (
@@ -139,6 +156,13 @@ function App() {
               })}
             </p>
           </div>
+
+          {quote && (
+            <div className="quote header-quote">
+              <p>"{quote.text}"</p>
+              <p>— {quote.author}</p>
+            </div>
+          )}
 
           {weather && (
             <div className="weather">
@@ -178,46 +202,43 @@ function App() {
             <h2 className="bookmarks-title">Shortcuts</h2>
             <div className="bookmarks-actions">
               <button
-                className="add-button"
+                className="action-button"
                 onClick={addShortcut}
                 title="Add shortcut"
               >
-                <IoAddSharp width={"35px"} />
-              </button>
-              <button
-                className="delete-button"
-                onClick={addShortcut}
-                title="Add shortcut"
-              >
-                <MdDelete width={"35px"} />
+                <IoAddSharp size={20} />
               </button>
             </div>
           </div>
           <div className="bookmarks-grid">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="bookmark-wrapper">
-                <a href={shortcut.url} className="bookmark">
+                <a 
+                  href={shortcut.url} 
+                  className="bookmark"
+                >
                   <span className="icon">{shortcut.icon}</span>
                   <span>{shortcut.name}</span>
                 </a>
-                <button
-                  className="delete-button"
-                  onClick={(e) => deleteShortcut(index, e)}
-                  title="Delete shortcut"
+                
+                <button 
+                  className="menu-button" 
+                  onClick={(e) => toggleMenu(index, e)}
                 >
-                  ×
+                  <BsThreeDotsVertical />
                 </button>
+                
+                {menuOpenIndex === index && (
+                  <div className="shortcut-menu">
+                    <button onClick={() => deleteShortcut(index)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
-
-        {quote && (
-          <div className="quote">
-            <p>"{quote.text}"</p>
-            <p>— {quote.author}</p>
-          </div>
-        )}
 
         <footer className="footer">
           <p>Your Beautiful Chrome Homepage • {new Date().getFullYear()}</p>
