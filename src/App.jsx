@@ -14,9 +14,8 @@ function App() {
 
   // Background images
   const backgrounds = [
-    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFuZHNjYXBlfGVufDB8fDB8fHww",
-
-    "https://images.unsplash.com/photo-1495571758719-6ec1e876d6ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bGFuZHNjYXBlJTIwc3Vuc2V0fGVufDB8fDB8fHww",
+    "/public/photo-1495571758719-6ec1e876d6ae.jpg",
+    "/public/photo-1506744038136-46273834b3fb.jpg",
   ];
 
   // Default shortcuts for first-time users
@@ -58,7 +57,7 @@ function App() {
     };
   }, []);
 
-  // Simulate weather API call
+  // weather API call
   useEffect(() => {
     const city = "Ambala"; // Default city
     const BaseURL = "https://api.weatherapi.com/v1/current.json";
@@ -89,22 +88,125 @@ function App() {
     })();
   }, []);
 
-  // Simulate quote API call
+  // quote call
   useEffect(() => {
     const quotes = [
       {
-        text: "The best way to predict the future is to invent it.",
-        author: "Alan Kay",
+        text: "Be yourself; everyone else is already taken.",
+        author: "Oscar Wilde",
       },
       {
-        text: "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+        text: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",
+        author: "Albert Einstein",
+      },
+      { text: "So many books, so little time.", author: "Frank Zappa" },
+      {
+        text: "A room without books is like a body without a soul.",
+        author: "Marcus Tullius Cicero",
+      },
+      {
+        text: "Be the change that you wish to see in the world.",
+        author: "Mahatma Gandhi",
+      },
+      {
+        text: "If you tell the truth, you don't have to remember anything.",
+        author: "Mark Twain",
+      },
+      {
+        text: "In three words I can sum up everything I've learned about life: it goes on.",
+        author: "Robert Frost",
+      },
+      {
+        text: "No one can make you feel inferior without your consent.",
+        author: "Eleanor Roosevelt",
+      },
+      {
+        text: "Live as if you were to die tomorrow. Learn as if you were to live forever.",
+        author: "Mahatma Gandhi",
+      },
+      {
+        text: "Without music, life would be a mistake.",
+        author: "Friedrich Nietzsche",
+      },
+      {
+        text: "We accept the love we think we deserve.",
+        author: "Stephen Chbosky",
+      },
+      {
+        text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+        author: "Ralph Waldo Emerson",
+      },
+      {
+        text: "Here's to the crazy ones. The misfits. The rebels.",
+        author: "Steve Jobs",
+      },
+      {
+        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
         author: "Winston Churchill",
+      },
+      {
+        text: "It is never too late to be what you might have been.",
+        author: "George Eliot",
+      },
+      {
+        text: "Do what you can, with what you have, where you are.",
+        author: "Theodore Roosevelt",
       },
       {
         text: "The only way to do great work is to love what you do.",
         author: "Steve Jobs",
       },
+      {
+        text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+        author: "Ralph Waldo Emerson",
+      },
+      {
+        text: "Imagination is more important than knowledge.",
+        author: "Albert Einstein",
+      },
+      {
+        text: "Everything you’ve ever wanted is on the other side of fear.",
+        author: "George Addair",
+      },
+      {
+        text: "Don't cry because it's over, smile because it happened.",
+        author: "Dr. Seuss",
+      },
+      {
+        text: "You miss 100% of the shots you don't take.",
+        author: "Wayne Gretzky",
+      },
+      {
+        text: "The journey of a thousand miles begins with one step.",
+        author: "Lao Tzu",
+      },
+      {
+        text: "The best way to predict the future is to invent it.",
+        author: "Alan Kay",
+      },
+      {
+        text: "Whether you think you can or you think you can’t, you’re right.",
+        author: "Henry Ford",
+      },
+      {
+        text: "You must be the change you wish to see in the world.",
+        author: "Mahatma Gandhi",
+      },
+      { text: "An unexamined life is not worth living.", author: "Socrates" },
+      {
+        text: "Strive not to be a success, but rather to be of value.",
+        author: "Albert Einstein",
+      },
+      {
+        text: "The only true wisdom is in knowing you know nothing.",
+        author: "Socrates",
+      },
+      {
+        text: "Act as if what you do makes a difference. It does.",
+        author: "William James",
+      },
     ];
+
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
   }, []);
 
@@ -192,9 +294,6 @@ function App() {
               </div>
             </div>
           )}
-          <button className="add-button" title="Change background">
-            🖼️
-          </button>
         </header>
 
         <div className="search-container">
@@ -253,7 +352,7 @@ function App() {
         </div>
 
         <footer className="footer">
-          <p>Your Beautiful Chrome Homepage • {new Date().getFullYear()}</p>
+          <p>{}</p>
         </footer>
       </div>
     </div>
