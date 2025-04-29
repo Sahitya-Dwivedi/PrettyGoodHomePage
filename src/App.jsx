@@ -14,11 +14,9 @@ function App() {
 
   // Background images
   const backgrounds = [
-    "https://source.unsplash.com/random/1920x1080/?nature",
-    "https://source.unsplash.com/random/1920x1080/?mountains",
-    "https://source.unsplash.com/random/1920x1080/?ocean",
-    "https://source.unsplash.com/random/1920x1080/?city",
-    "https://source.unsplash.com/random/1920x1080/?abstract",
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFuZHNjYXBlfGVufDB8fDB8fHww",
+
+    "https://images.unsplash.com/photo-1495571758719-6ec1e876d6ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bGFuZHNjYXBlJTIwc3Vuc2V0fGVufDB8fDB8fHww",
   ];
 
   // Default shortcuts for first-time users
@@ -110,6 +108,10 @@ function App() {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
   }, []);
 
+  useEffect(() => {
+    let num = Math.floor(Math.random() * backgrounds.length);
+    setBackgroundIndex(num);
+  }, [backgrounds.length]);
   // Handle search
   const handleSearch = (e) => {
     e.preventDefault();
@@ -118,11 +120,6 @@ function App() {
         searchQuery
       )}`;
     }
-  };
-
-  // Handle background change
-  const changeBackground = () => {
-    setBackgroundIndex((prev) => (prev + 1) % backgrounds.length);
   };
 
   // Add new shortcut
@@ -155,7 +152,9 @@ function App() {
     <div className="app">
       <div
         className="background"
-        style={{ backgroundImage: `url(${backgrounds[backgroundIndex]})` }}
+        style={{
+          backgroundImage: `url(${backgrounds[backgroundIndex]})`,
+        }}
       ></div>
       <div className="overlay"></div>
 
@@ -193,11 +192,7 @@ function App() {
               </div>
             </div>
           )}
-          <button
-            className="add-button"
-            onClick={changeBackground}
-            title="Change background"
-          >
+          <button className="add-button" title="Change background">
             🖼️
           </button>
         </header>
