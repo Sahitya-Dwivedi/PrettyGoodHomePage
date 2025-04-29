@@ -53,22 +53,42 @@ function App() {
     const handleClickOutside = () => {
       setMenuOpenIndex(null);
     };
-    
-    document.addEventListener('click', handleClickOutside);
+
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
   // Simulate weather API call
   useEffect(() => {
-    setTimeout(() => {
-      setWeather({
-        temp: "72°F",
-        condition: "Sunny",
-        icon: "☀️",
-      });
-    }, 1000);
+    const city = "Ambala"; // Default city
+    const BaseURL = "https://api.weatherapi.com/v1/current.json";
+    const APIkey = import.meta.env.VITE_APP_WEATHER_API;
+    const apiUrl = `${BaseURL}?key=${APIkey}&q=${encodeURIComponent(city)}`;
+    (async () => {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        console.log(data);
+        setTimeout(() => {
+          setWeather({
+            temp: `${Math.round(data.current.temp_c)}°C`,
+            condition: data.current.condition.text,
+            icon: data.current.condition.icon
+              ? `https:${data.current.condition.icon}`
+              : "❓",
+          });
+        }, 1000);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        setWeather({
+          temp: "N/A",
+          condition: "Unable to fetch weather",
+          icon: "❓",
+        });
+      }
+    })();
   }, []);
 
   // Simulate quote API call
@@ -166,7 +186,7 @@ function App() {
 
           {weather && (
             <div className="weather">
-              <span className="weather-icon">{weather.icon}</span>
+              <img src={weather.icon} className="weather-icon" alt="icon" />
               <div>
                 <div className="weather-temp">{weather.temp}</div>
                 <div>{weather.condition}</div>
@@ -213,21 +233,18 @@ function App() {
           <div className="bookmarks-grid">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="bookmark-wrapper">
-                <a 
-                  href={shortcut.url} 
-                  className="bookmark"
-                >
+                <a href={shortcut.url} className="bookmark">
                   <span className="icon">{shortcut.icon}</span>
                   <span>{shortcut.name}</span>
                 </a>
-                
-                <button 
-                  className="menu-button" 
+
+                <button
+                  className="menu-button"
                   onClick={(e) => toggleMenu(index, e)}
                 >
                   <BsThreeDotsVertical />
                 </button>
-                
+
                 {menuOpenIndex === index && (
                   <div className="shortcut-menu">
                     <button onClick={() => deleteShortcut(index)}>
