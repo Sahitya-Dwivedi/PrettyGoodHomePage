@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Pretty Good Homepage",
+    "version": "1.0.0",
+    "description": "A beautiful custom Chrome new tab page",
+    "icons": {
+      "16": "icons/ChatGPT Image Apr 30, 2025, 10_18_50 PM.png",
+      "48": "icons/ChatGPT Image Apr 30, 2025, 10_20_12 PM.png",
+      "128": "icons/ChatGPT Image Apr 30, 2025, 10_22_07 PM.png"
+    },
+    "chrome_url_overrides": {
+      "newtab": "index.html"
+    },
+    "permissions": [
+      "storage"
+    ]
+  }
