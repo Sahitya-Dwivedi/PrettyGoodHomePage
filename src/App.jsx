@@ -14,8 +14,8 @@ function App() {
 
   // Background images
   const backgrounds = [
-    "/public/photo-1495571758719-6ec1e876d6ae.jpg",
-    "/public/photo-1506744038136-46273834b3fb.jpg",
+    "photo-1495571758719-6ec1e876d6ae.jpg",
+    "photo-1506744038136-46273834b3fb.jpg",
   ];
 
   // Default shortcuts for first-time users
@@ -26,15 +26,23 @@ function App() {
     { name: "Netflix", url: "https://www.netflix.com", icon: "🎬" },
   ];
 
-  // Load shortcuts from localStorage or use defaults
-  const [shortcuts, setShortcuts] = useState(() => {
-    const savedShortcuts = localStorage.getItem("shortcuts");
-    return savedShortcuts ? JSON.parse(savedShortcuts) : defaultShortcuts;
-  });
+  // Load shortcuts from Chrome storage or use defaults
+  const [shortcuts, setShortcuts] = useState(defaultShortcuts);
 
-  // Save shortcuts to localStorage when they change
   useEffect(() => {
-    localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+    // Load shortcuts from Chrome storage
+    // eslint-disable-next-line no-undef
+    chrome.storage.local.get(["shortcuts"], (result) => {
+      if (result.shortcuts) {
+        setShortcuts(result.shortcuts);
+      }
+    });
+  }, []);
+
+  // Save shortcuts to Chrome storage when they change
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    chrome.storage.local.set({ shortcuts });
   }, [shortcuts]);
 
   // Update time every second
