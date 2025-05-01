@@ -11,6 +11,12 @@ function App() {
   const [quote, setQuote] = useState({ text: "", author: "" });
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newShortcutName, setNewShortcutName] = useState('');
+  const [newShortcutUrl, setNewShortcutUrl] = useState('');
+  const [formError, setFormError] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
   // Background images
   const backgrounds = [
@@ -232,12 +238,88 @@ function App() {
     }
   };
 
-  // Add new shortcut
+  // Show the add shortcut modal
   const addShortcut = () => {
-    const name = prompt("Enter website name:");
-    const url = prompt("Enter website URL:");
-    if (name && url) {
-      setShortcuts([...shortcuts, { name, url, icon: "🔖" }]);
+    setShowAddModal(true);
+  };
+
+  // Handle the shortcut submission
+  const handleAddShortcut = () => {
+    setFormError('');
+    
+    // Validate inputs
+    if (!newShortcutName.trim()) {
+      setFormError('Please enter a name for the shortcut.');
+      return;
+    }
+    
+    if (!newShortcutUrl.trim()) {
+      setFormError('Please enter a URL for the shortcut.');
+      return;
+    }
+    
+    // Process URL
+    let url = newShortcutUrl.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    
+    try {
+      // Test if URL is valid
+      new URL(url);
+      
+      // Get favicon and add shortcut
+      const favicon = getFaviconUrl(url);
+      setShortcuts([...shortcuts, { name: newShortcutName.trim(), url, icon: favicon }]);
+      
+      // Clear form and close modal
+      setNewShortcutName('');
+      setNewShortcutUrl('');
+      setShowAddModal(false);
+    } catch {
+      setFormError('Please enter a valid URL.');
+    }
+  };
+
+  // Handle the shortcut edit submission
+  const handleEditShortcut = () => {
+    setFormError('');
+    
+    // Validate inputs
+    if (!newShortcutName.trim()) {
+      setFormError('Please enter a name for the shortcut.');
+      return;
+    }
+    
+    if (!newShortcutUrl.trim()) {
+      setFormError('Please enter a URL for the shortcut.');
+      return;
+    }
+    
+    // Process URL
+    let url = newShortcutUrl.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    
+    try {
+      // Test if URL is valid
+      new URL(url);
+      
+      // Get favicon and update shortcut
+      const favicon = getFaviconUrl(url);
+      const updatedShortcuts = [...shortcuts];
+      updatedShortcuts[editIndex] = { name: newShortcutName.trim(), url, icon: favicon };
+      setShortcuts(updatedShortcuts);
+      
+      // Clear form and close modal
+      setNewShortcutName('');
+      setNewShortcutUrl('');
+      setShowAddModal(false);
+      setIsEditMode(false);
+      setEditIndex(null);
+    } catch {
+      setFormError('Please enter a valid URL.');
     }
   };
 
@@ -256,6 +338,38 @@ function App() {
     e.preventDefault();
     e.stopPropagation();
     setMenuOpenIndex(menuOpenIndex === index ? null : index);
+  };
+
+  // Add this function inside the App component
+  const getFaviconUrl = (url) => {
+    try {
+      if (!url) return "🔗"; // Return a default icon if no URL is provided
+
+      // Add protocol if missing
+      let normalizedUrl = url;
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        normalizedUrl = "https://" + url;
+      }
+
+      // Extract domain from URL
+      const domain = new URL(normalizedUrl).hostname;
+
+      // Use Google's favicon service instead of direct favicon URL
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    } catch (error) {
+      console.error("Error parsing URL:", error);
+      return "🔗"; // Return a default icon on error
+    }
+  };
+
+  // Add this function with your other functions
+  const editShortcut = (index) => {
+    setIsEditMode(true);
+    setEditIndex(index);
+    setNewShortcutName(shortcuts[index].name);
+    setNewShortcutUrl(shortcuts[index].url);
+    setShowAddModal(true);
+    setMenuOpenIndex(null);
   };
 
   return (
@@ -336,7 +450,7 @@ function App() {
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="bookmark-wrapper">
                 <a href={shortcut.url} className="bookmark">
-                  <span className="icon">{shortcut.icon}</span>
+                  <img src={shortcut.icon} className="icon" />
                   <span>{shortcut.name}</span>
                 </a>
 
@@ -349,6 +463,9 @@ function App() {
 
                 {menuOpenIndex === index && (
                   <div className="shortcut-menu">
+                    <button onClick={() => editShortcut(index)}>
+                      Edit
+                    </button>
                     <button onClick={() => deleteShortcut(index)}>
                       Delete
                     </button>
@@ -358,6 +475,66 @@ function App() {
             ))}
           </div>
         </div>
+
+        {/* Add Shortcut Modal */}
+        {showAddModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>{isEditMode ? "Edit Shortcut" : "Add New Shortcut"}</h2>
+              
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                isEditMode ? handleEditShortcut() : handleAddShortcut();
+              }}>
+                {formError && <div className="form-error">{formError}</div>}
+                
+                <div className="form-group">
+                  <label htmlFor="shortcut-name">Name</label>
+                  <input
+                    type="text"
+                    id="shortcut-name"
+                    value={newShortcutName}
+                    onChange={(e) => setNewShortcutName(e.target.value)}
+                    placeholder="e.g. GitHub"
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="shortcut-url">URL</label>
+                  <input
+                    type="text"
+                    id="shortcut-url"
+                    value={newShortcutUrl}
+                    onChange={(e) => setNewShortcutUrl(e.target.value)}
+                    placeholder="e.g. github.com"
+                    required
+                  />
+                </div>
+                
+                <div className="modal-actions">
+                  <button 
+                    type="button" 
+                    className="cancel-button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setNewShortcutName('');
+                      setNewShortcutUrl('');
+                      setFormError('');
+                      setIsEditMode(false);
+                      setEditIndex(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="submit-button">
+                    {isEditMode ? "Save Changes" : "Add Shortcut"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         <footer className="footer">
           <p>{}</p>
