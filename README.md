@@ -2,6 +2,8 @@
 
 A beautiful custom Chrome new tab page that replaces your default new tab with a personalized dashboard featuring time, weather, search, and customizable shortcuts.
 
+![Pretty Good Homepage Screenshot](/public/Screenshot%202025-05-01%20225248.png)
+
 ## Features
 
 - **Dynamic Background Images** - Beautiful backgrounds that rotate automatically
