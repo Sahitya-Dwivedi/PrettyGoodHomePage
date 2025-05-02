@@ -81,7 +81,6 @@ function App() {
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        console.log(data);
         setTimeout(() => {
           setWeather({
             temp: `${Math.round(data.current.temp_c)}°C`,
